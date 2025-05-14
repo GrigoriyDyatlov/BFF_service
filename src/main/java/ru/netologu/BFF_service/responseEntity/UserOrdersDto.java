@@ -7,9 +7,6 @@ import lombok.Value;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * DTO for {@link ru.netologu.BFF_service.responseEntity.UserOrders}
- */
 @Value
 @JsonIgnoreProperties(ignoreUnknown = true)
 @AllArgsConstructor
