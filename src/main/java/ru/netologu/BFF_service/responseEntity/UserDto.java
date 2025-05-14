@@ -9,7 +9,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class User {
+public class UserDto {
     private UUID userId;
     private String fullName;
     private String addressDelivery;

@@ -2,16 +2,17 @@ package ru.netologu.BFF_service.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import ru.netologu.BFF_service.responseEntity.Order;
-import ru.netologu.BFF_service.responseEntity.User;
-import ru.netologu.BFF_service.responseEntity.UserOrders;
+import ru.netologu.BFF_service.responseEntity.OrderDto;
+import ru.netologu.BFF_service.responseEntity.UserDto;
+import ru.netologu.BFF_service.responseEntity.UserOrdersDto;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -20,24 +21,22 @@ import java.util.List;
 public class UserOrdersResource {
     private final String userOrdersEndpoint = "/api/orders/by-user/";
     private final String getUserEndpoint = "/api/users/";
-
+    private final RestTemplate restTemplate = new RestTemplate();
     @Value(value = "$userService")
     private String userService;
-
     @Value(value = "$orderService")
     private String orderService;
 
-    private final RestTemplate restTemplate = new RestTemplate();
-
     @GetMapping("/{userId}")
-    public UserOrders getUserOrder (@PathVariable String userId) {
-        Order order = restTemplate.getForObject(orderService + userOrdersEndpoint + userId,
-                Order.class);
+    public UserOrdersDto getUserOrder(@PathVariable String userId) {
+        ResponseEntity<OrderDto[]> response = restTemplate.getForEntity(orderService + userOrdersEndpoint + userId,
+                OrderDto[].class);
+        OrderDto[] orders = response.getBody();
+        List<OrderDto> orderDtos = Arrays.asList(orders);
 
-        User user = restTemplate.getForObject(userService + getUserEndpoint + userId, User.class);
+        UserDto userDto = restTemplate.getForObject(userService + getUserEndpoint + userId, UserDto.class);
 
-        return new UserOrders(user, order);
-
+        return UserOrdersDto.fromEntity(userDto, orderDtos);
     }
 }
 

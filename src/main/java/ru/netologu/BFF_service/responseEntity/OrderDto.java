@@ -7,14 +7,15 @@ import lombok.Setter;
 
 import java.util.List;
 import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Order {
+public class OrderDto {
     private UUID id;
     private String userId;
     private String currency;
     private Integer totalCost;
-    private List listOfGoods;
+    private List<String> listOfGoods;
 }
